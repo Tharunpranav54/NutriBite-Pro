@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriBite Pro - Ultimate Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        const savedTheme = localStorage.getItem('nutribite_theme') || 'dark';
+        if (savedTheme === 'dark') document.documentElement.classList.add('dark-theme');
+        window.addEventListener('DOMContentLoaded', () => { if (savedTheme === 'dark') document.body.classList.add('dark-theme'); });
+    </script>
+</head>
+<body>
+
+    <!-- Unified Navigation -->
+    <nav class="navbar">
+        <div class="brand" onclick="appHub.navigate('home')">
+            <ion-icon name="restaurant"></ion-icon> NutriBite Pro
+        </div>
+        <div class="nav-links">
+            <span class="nav-item active" onclick="appHub.navigate('home')" id="nav-home"><ion-icon name="home-outline"></ion-icon> Home</span>
+            
+            <span class="nav-item auth-req" style="display:none;" onclick="appHub.navigate('menu')" id="nav-menu"><ion-icon name="fast-food-outline"></ion-icon> Master Menu</span>
+            <!-- Explicit Separate Healthy Menu Request -->
+            <span class="nav-item auth-req" style="display:none; color:var(--secondary);" onclick="appHub.navigate('healthy-menu')" id="nav-healthy-menu"><ion-icon name="leaf-outline"></ion-icon> Healthy Menu Engine</span>
+            
+            <span class="nav-item auth-req" style="display:none;" onclick="appHub.navigate('bmi')" id="nav-bmi"><ion-icon name="pulse-outline"></ion-icon> Deep Health Scanner</span>
+            <span class="nav-item auth-req" style="display:none;" onclick="appHub.navigate('cart')" id="nav-cart"><ion-icon name="cart-outline"></ion-icon> Cart (<span id="cart-count">0</span>)</span>
+            <span class="nav-item auth-req" style="display:none;" onclick="appHub.navigate('profile')" id="nav-profile"><ion-icon name="person-circle-outline"></ion-icon> Digital Hub</span>
+            
+            <!-- Theme Toggle -->
+            <button class="theme-toggle-btn" onclick="appHub.toggleTheme()" id="theme-btn"><ion-icon name="moon-outline"></ion-icon></button>
+            <button class="nav-btn" onclick="appHub.navigate('login')" id="nav-login-btn">Sign In</button>
+        </div>
+    </nav>
+
+    <!-- FLOATING FEATURE: AI ASSISTANT -->
+    <div class="ai-assistant-bubble" onclick="document.getElementById('ai-panel').classList.toggle('active')">
+        <ion-icon name="planet"></ion-icon>
+    </div>
+    <div class="ai-panel" id="ai-panel">
+        <div class="ai-header">
+            <span>Nutri AI Assistant</span>
+            <ion-icon name="close" style="cursor:pointer; font-size:1.5rem;" onclick="document.getElementById('ai-panel').classList.remove('active')"></ion-icon>
+        </div>
+        <div class="ai-body" id="ai-chat-body">
+            <div class="ai-msg-bot">Hello! I'm your Smart Nutrition AI. Ask me to suggest foods based on your vitals or track an order via voice command!</div>
+        </div>
+        <div class="ai-input-zone">
+            <button class="app-btn-secondary" style="border-radius:50%; width:45px; height:45px; display:flex; justify-content:center; align-items:center;" onclick="alert('Voice Recognition MOCK Activated...')"><ion-icon name="mic" style="color:var(--danger);"></ion-icon></button>
+            <input type="text" id="ai-chat-input" class="app-input" style="padding:0.8rem; border-radius:20px;" placeholder="Ask AI..." onkeypress="appHub.handleAIPress(event)">
+            <button class="app-btn" style="border-radius:50%; width:45px; height:45px; display:flex; justify-content:center; align-items:center;" onclick="appHub.sendAIMessage()"><ion-icon name="send"></ion-icon></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        
+        <!-- MODULE: HOME ENHANCED (ULTIMATE EDITION) -->
+        <section id="module-home" class="module-view active" style="padding: 0; min-height: 100vh; position:relative; overflow:hidden;">
+            <!-- Ambient Animated Orbs -->
+            <div class="ambient-orb orb-1"></div>
+            <div class="ambient-orb orb-2"></div>
+            
+            <div class="home-flex-container" style="position:relative; width:100%; height:100vh; z-index:10; display:flex; align-items:center; padding: 0 10%;">
+                
+                <!-- Left Text Side -->
+                <div style="flex:1; padding-right: 5rem;">
+                    <div class="mock-badge mb-3"><ion-icon name="flash"></ion-icon> Vitals-Synced Nutrition Engine</div>
+                    <h1 class="mega-title">
+                        EAT <br>
+                        <span class="text-outline">SMARTER.</span><br>
+                        LIVE <span class="text-gradient">FASTER.</span>
+                    </h1>
+                    <p style="font-size: 1.3rem; color: #a1a1aa; margin-top: 1.5rem; margin-bottom: 2.5rem; max-width:500px; line-height:1.6;">
+                        NutriBite Pro securely pipelines your health telemetry with bespoke culinary algorithms. The absolute pinnacle of gastronomy.
+                    </p>
+                    <div style="display: flex; gap: 1rem; flex-wrap:wrap;">
+                        <button class="app-btn btn-glowing" style="width:auto; padding:1.2rem 2.5rem;" onclick="appHub.navigate('login')">Initialize Portal <ion-icon name="rocket"></ion-icon></button>
+                        <button class="app-btn-secondary glass-btn" style="width:auto; padding:1.2rem 2.5rem; display:flex; align-items:center; gap:0.5rem;" onclick="appHub.navigate('bmi')"><ion-icon name="pulse" style="color:var(--secondary)"></ion-icon> System Scan</button>
+                    </div>
+                </div>
+
+                <!-- Right Visual Side -->
+                <div style="flex:1; position:relative; display:flex; justify-content:center; align-items:center;">
+                    <!-- Floating Dish Image -->
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" style="width: 480px; height: 480px; border-radius: 50%; object-fit: cover; box-shadow: 0 40px 80px rgba(0,0,0,0.8); animation: hoverFloat 6s ease-in-out infinite; position:relative; z-index:2; border: 4px solid rgba(255,255,255,0.05);" alt="Premium Dish">
+                    
+                    <!-- Decorative Glass Cards hovering around the dish -->
+                    <div class="glass-float-card" style="top: 5%; right: -5%; animation-delay: 1s;">
+                        <ion-icon name="analytics-outline" style="color:var(--info); font-size:1.5rem; margin-bottom:0.5rem;"></ion-icon><br>
+                        <strong>Live Telemetry</strong><br><small style="color:var(--text-secondary)">Syncing biometrics...</small>
+                    </div>
+                    <div class="glass-float-card" style="bottom: 10%; left: -5%; animation-delay: 2s;">
+                        <ion-icon name="leaf-outline" style="color:var(--secondary); font-size:1.5rem; margin-bottom:0.5rem;"></ion-icon><br>
+                        <strong>Vegan Matrix</strong><br><small style="color:var(--text-secondary)">Fully Optimized</small>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MODULE: AUTHENTICATION -->
+        <section id="module-login" class="module-view" style="position:relative;">
+            <div class="auth-container glass-panel" style="max-width: 550px; padding: 2rem;">
+                <ion-icon name="arrow-back" class="back-btn" onclick="appHub.navigate('home')"></ion-icon> <!-- Requested BACK button -->
+                
+                <h2 class="text-center mb-1 mt-1" id="auth-title" style="font-size:1.8rem; font-weight:800;">Identity Link</h2>
+                <p class="text-center mb-3 text-secondary" id="auth-subtitle">Establish secure handshake.</p>
+                
+                <div class="toggle-pills" style="margin-bottom:1.5rem;">
+                    <div class="toggle-pill active" id="pill-login" onclick="appHub.switchAuthMode('login')">Sign In</div>
+                    <div class="toggle-pill" id="pill-register" onclick="appHub.switchAuthMode('register')">Create Profile</div>
+                </div>
+
+                <form id="auth-form" onsubmit="appHub.submitAuth(); return false;">
+                    
+                    <!-- Permanent Universal Credentials (Compressed) -->
+                    <div style="display:flex; flex-direction:column; gap:0.8rem; margin-bottom:1rem;">
+                        <input type="email" id="auth-email" class="app-input" required placeholder="User Email Node (demo@domain.com)" style="padding:1rem;">
+                        
+                        <div>
+                            <div class="input-icon-wrapper">
+                                <input type="password" id="auth-pass" class="app-input" required placeholder="Encryption Passkey" style="padding:1rem;">
+                                <ion-icon name="eye" id="login-eye" onclick="appHub.togglePassword('auth-pass', 'login-eye')"></ion-icon>
+                            </div>
+                            <div style="text-align: right; margin-top: 0.3rem;" id="forgot-pass-link"><span style="font-size: 0.8rem; color: var(--primary); cursor: pointer; font-weight: 700;" onclick="alert('Encryption Key reset link dispatched!')">Forgot Password?</span></div>
+                        </div>
+                    </div>
+
+                    <div id="auth-step-1">
+                        <button type="submit" class="app-btn" id="auth-submit-btn">Login Securely</button>
+
+                        <div class="text-center mt-3 pt-3" style="border-top:1px dashed var(--border-color);">
+                            <span style="font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; font-weight: 600;" onclick="appHub.navigate('admin-login')"><ion-icon name="briefcase"></ion-icon> Enterprise Partner Login</span>
+                        </div>
+                    </div>
+
+                    <div id="auth-step-2" style="display:none; animation: fadeIn 0.4s;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.6rem; margin-bottom:0.6rem;">
+                            <input type="text" id="auth-name" class="app-input" placeholder="Legal Name" style="padding:1rem;" required>
+                            <input type="text" id="auth-phone" class="app-input" placeholder="Mobile Node" style="padding:1rem;" required>
+                            <input type="number" id="auth-age" class="app-input" placeholder="Age" style="padding:1rem;" required>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:0.6rem; margin-bottom:1rem;">
+                            <select id="auth-gender" class="app-input" style="padding:1rem;" required><option value="" disabled selected>Gender</option><option>Male</option><option>Female</option><option>Other</option></select>
+                            <input type="text" id="auth-address" class="app-input" placeholder="Delivery Coordinates (Address)" style="padding:1rem;" required>
+                        </div>
+                        
+                        <button type="submit" class="app-btn">Compile Profile Array</button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- MODULE: LIVE TRACKING (SWIGGY STYLE HUB) -->
+        <section id="module-tracking" class="module-view" style="padding: 0; min-height: 100vh; position: relative;">
+            <div id="user-delivery-map" style="width: 100%; height: 70vh; z-index: 10;"></div>
+            
+            <!-- Floating Back Button -->
+            <button class="app-btn-secondary" onclick="appHub.navigate('profile')" style="position:absolute; top: 2rem; left: 2rem; z-index:900; background: var(--bg-glass-heavy); border-radius:12px; backdrop-filter:blur(10px); padding:0.6rem; display:flex; align-items:center; box-shadow:var(--shadow-md); border:1px solid var(--border-color);"><ion-icon name="arrow-back" style="font-size:1.6rem; color:var(--text-primary);"></ion-icon></button>
+            
+            <!-- Bottom Sheet Overlay -->
+            <div style="position:absolute; bottom: 0; width: 100%; min-height: 35vh; background: var(--bg-surface); border-radius: 30px 30px 0 0; z-index: 900; padding: 2rem 5%; box-shadow: 0 -20px 50px rgba(0,0,0,0.8);">
+                <div style="width: 60px; height: 6px; background: var(--border-color); border-radius: 10px; margin: 0 auto 1.5rem auto;"></div>
+                
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 1.5rem;">
+                     <div>
+                         <h2 style="font-size: 2.2rem; font-weight: 900; margin-bottom: 0.2rem; line-height:1;">Arriving in <span style="color:var(--primary);">12 mins</span></h2>
+                         <p class="text-secondary" style="font-size: 1.1rem; font-weight:600;"><ion-icon name="ellipse" style="color:var(--secondary); font-size: 0.8rem;"></ion-icon> Your order is on the way</p>
+                     </div>
+                </div>
+
+                <!-- Delivery Partner Widget -->
+                <div style="display:flex; align-items:center; gap: 1rem; background: var(--nav-bg); border: 1px solid var(--border-color); padding: 1.2rem; border-radius: 20px;">
+                     <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                     <div style="flex: 1;">
+                          <div style="font-weight:900; font-size: 1.3rem; color: white;">Sanjay R</div>
+                          <div style="font-size:0.95rem; color:var(--text-secondary); margin-top:0.2rem; font-weight:600;"><ion-icon name="star" style="color: gold;"></ion-icon> 4.9 • Delivery Partner</div>
+                     </div>
+                     <div style="display:flex; gap: 0.8rem;">
+                         <button class="app-btn-secondary" style="border-radius: 50%; width: 50px; height: 50px; padding:0; display:flex; justify-content:center; align-items:center; border: 1px solid var(--border-color);" onclick="alert('Chat module initiated.')"><ion-icon name="chatbubble-ellipses" style="font-size: 1.5rem;"></ion-icon></button>
+                         <button class="app-btn" style="border-radius: 50%; width: 50px; height: 50px; padding:0; display:flex; justify-content:center; align-items:center;" onclick="alert('Calling Sanjay R: +91 9342044193')"><ion-icon name="call" style="font-size: 1.5rem;"></ion-icon></button>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE: BMI CALCULATION ENGINE (EXTENDED) -->
+        <section id="module-bmi" class="module-view">
+            <h2 style="font-size: 2.5rem; font-weight:900; margin-bottom: 0.5rem; text-align:center;">Deep <span style="color:var(--primary);">Health Scanner</span></h2>
+            <p class="text-secondary mb-4 text-center">Analyze BMI, Sugar Levels, and Blood Pressure to formulate a Smart Diet.</p>
+
+            <div class="auth-container glass-panel" style="max-width: 650px; margin-top: 0;">
+                <form onsubmit="appHub.calculateBMI(); return false;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                        <div>
+                            <label class="text-secondary mb-1" style="display:block; font-weight:600;">Height (cm)</label>
+                            <input type="number" id="bmi-h" class="app-input" required placeholder="175">
+                        </div>
+                        <div>
+                            <label class="text-secondary mb-1" style="display:block; font-weight:600;">Weight (kg)</label>
+                            <input type="number" id="bmi-w" class="app-input" required placeholder="70">
+                        </div>
+                    </div>
+                    <!-- EXTENDED HEALTH VARIABLES -->
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:2rem; padding-top:1.5rem; border-top:1px dashed var(--border-color);">
+                        <div>
+                            <label class="text-secondary mb-1" style="display:block; font-weight:600;">Blood Sugar (mg/dL)</label>
+                            <input type="number" id="bmi-sugar" class="app-input" required placeholder="100">
+                        </div>
+                        <div>
+                            <label class="text-secondary mb-1" style="display:block; font-weight:600;">Blood Pressure (Sys)</label>
+                            <input type="number" id="bmi-bp" class="app-input" required placeholder="120">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="app-btn">COMMENCE DEEP DIAGNOSIS</button>
+
+                    <div id="bmi-results-wrapper" class="bmi-result-box">
+                        <div id="bmi-score" style="font-size:2.5rem; margin-bottom:0.5rem;">-</div>
+                        <div id="bmi-status" style="font-size:1rem; text-transform:uppercase; letter-spacing:1px; margin-bottom: 1rem;">-</div>
+                        <div id="ext-health-status" style="font-size:0.9rem; color:var(--text-secondary); background:var(--bg-main); padding:1rem; border-radius:12px;">Waiting...</div>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="smart-menu-container" style="display:none; margin-top: 4rem;">
+                <h2 style="font-size: 2rem; font-weight:900; margin-bottom: 2rem; text-align:center;">Your Curated <span style="color:var(--secondary);">Smart Diet</span> Algorithm</h2>
+                <div id="bmi-menu-grid" class="menu-grid"></div>
+            </div>
+        </section>
+
+        <!-- MODULE: MASTER MENU -->
+        <section id="module-menu" class="module-view">
+            <h2 style="font-size: 2.5rem; font-weight:900; margin-bottom: 0.5rem; text-align:center;">Master Inventory Hub</h2>
+            <p class="text-secondary mb-4 text-center">Select items to inject into your loadout.</p>
+            
+            <div class="search-container">
+                <input type="text" id="menu-search-input" placeholder="Search foods or ask AI..." onkeyup="appHub.searchMenu(this.value)">
+                <button class="mic-btn" id="voice-search-btn" onclick="appHub.startVoiceSearch()"><ion-icon name="mic"></ion-icon></button>
+            </div>
+
+            <div class="tab-list mb-4" style="justify-content:center;">
+                <div class="tab-link active" onclick="appHub.filterMenu('All', this, 'menu-grid')">Global Loadout</div>
+                <div class="tab-link" onclick="appHub.filterMenu('Meals', this, 'menu-grid')">Heavy Meals</div>
+                <div class="tab-link" onclick="appHub.filterMenu('Snacks', this, 'menu-grid')">Snacks & Sides</div>
+                <div class="tab-link" onclick="appHub.filterMenu('Juice', this, 'menu-grid')">Beverage & Detox</div>
+            </div>
+            <div id="menu-grid" class="menu-grid"></div>
+        </section>
+
+        <!-- MODULE: HEALTHY MENU SEPARATE REQUEST -->
+        <section id="module-healthy-menu" class="module-view">
+            <h2 style="font-size: 2.5rem; font-weight:900; margin-bottom: 0.5rem;">Dedicated <span style="color:var(--secondary)">Healthy Menu</span> Engine</h2>
+            <p class="text-secondary mb-4">Exclusive vegan, low calorie, and specialized health algorithms.</p>
+            <div id="healthy-menu-grid" class="menu-grid"></div>
+        </section>
+
+        <!-- MODULE: CART -->
+        <section id="module-cart" class="module-view">
+            <h2 style="font-size: 2.5rem; font-weight:900; margin-bottom: 2rem;">Checkout Matrix</h2>
+            <div class="bento-grid" style="grid-template-columns: 2fr 1fr;">
+                <div class="glass-panel" style="padding: 2.5rem; height: fit-content;">
+                    <h3 class="mb-3">Current Injection Target</h3>
+                    <div id="cart-items-container"><p class="text-secondary">Cart is empty.</p></div>
+                    <div class="mt-4 pt-4" style="border-top:1px dashed var(--border-color);">
+                        <h4 class="mb-2"><ion-icon name="calendar-outline" style="color:var(--info);"></ion-icon> Scheduled Pre-Booking Override</h4>
+                        <div style="display:flex; gap:1rem;"><input type="date" id="prebook-date" class="app-input" style="padding: 0.8rem;"><input type="time" id="prebook-time" class="app-input" style="padding: 0.8rem;"></div>
+                    </div>
+                    <div class="mt-4 pt-4" style="border-top:1px dashed var(--border-color);">
+                        <h4 class="mb-2"><ion-icon name="wallet-outline" style="color:var(--secondary);"></ion-icon> Payment Source Check</h4>
+                        <select id="checkout-payment-method" class="app-input" style="padding: 0.8rem;">
+                            <option value="GPay Gateway">GPay / UPI Auth</option>
+                            <option value="PhonePe Gateway">PhonePe Gateway</option>
+                            <option value="Membership Blockchain Wallet">Membership Wallet Deduct</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="glass-panel" style="padding: 2.5rem; height: fit-content; position: sticky; top: 120px;">
+                    <h3 class="mb-3">Financial Computation</h3>
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 1rem;"><span class="text-secondary">Subtotal</span><span id="c-sub" style="font-weight:700;">₹0</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 1rem;"><span class="text-secondary">Taxes (5%)</span><span id="c-tax" style="font-weight:700;">₹0</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 1rem;"><span class="text-secondary">Parcel Packaging</span><span id="c-del" style="font-weight:700; color:var(--info);">₹17</span></div>
+                    <hr style="border:none; border-top:1px dashed var(--border-color); margin: 1.5rem 0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 2rem; font-size:1.5rem; font-weight:800;"><span>Total Compute</span><span id="c-tot" style="color:var(--primary);">₹0</span></div>
+                    <button class="app-btn" onclick="appHub.checkout()">Authenticate Transaction <ion-icon name="lock-closed"></ion-icon></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE: EXTENDED USER HUB -->
+        <section id="module-profile" class="module-view">
+            <h2 class="mb-4" style="font-size:2.5rem; font-weight:900;">User <span style="color:var(--primary);">Profile Identity</span></h2>
+
+            <div class="tab-list mb-4" style="flex-wrap: wrap; justify-content: center; gap: 0.5rem; padding: 1rem; border-radius: 20px; background: rgba(0,0,0,0.2);">
+                <div class="tab-link active" onclick="appHub.switchProfileTab('overview', this)">Overview & Map</div>
+                <div class="tab-link" onclick="appHub.switchProfileTab('orders', this)">Order History</div>
+                <div class="tab-link" onclick="appHub.switchProfileTab('payments', this)">Invoices & Logs</div>
+                <div class="tab-link" onclick="appHub.switchProfileTab('college', this)">College Sync Details</div>
+                <div class="tab-link" onclick="appHub.switchProfileTab('health', this)">Health Preferences</div>
+                <div class="tab-link" onclick="appHub.switchProfileTab('security', this)">Login Security</div>
+                <div class="tab-link" onclick="appHub.switchProfileTab('notif', this)">Push Notifications</div>
+            </div>
+
+            <!-- TAB: OVERVIEW & 3D CARD -->
+            <div id="prof-tab-overview" class="profile-tab-content">
+                <div class="bento-grid">
+                    <div class="glass-panel" style="padding:2.5rem; grid-column: span 2;">
+                        <h3 class="mb-3"><ion-icon name="finger-print"></ion-icon> Identity Matrix</h3>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div><span class="text-secondary" style="font-size:0.85rem; text-transform:uppercase;">Legal Name</span><h4 id="hub-name" style="font-size:1.2rem;">-</h4></div>
+                            <div><span class="text-secondary" style="font-size:0.85rem; text-transform:uppercase;">Vitals/BMI Sync</span><h4 id="hub-vitals" style="font-size:1.2rem;">-</h4></div>
+                            <div><span class="text-secondary" style="font-size:0.85rem; text-transform:uppercase;">Contact Protocol</span><h4 id="hub-email" style="font-size:1.2rem;">-</h4></div>
+                            <div><span class="text-secondary" style="font-size:0.85rem; text-transform:uppercase;">Phone Comms</span><h4 id="hub-phone" style="font-size:1.2rem;">-</h4></div>
+                        </div>
+                        <button class="app-btn-secondary app-btn mt-4" style="width: auto; padding: 0.8rem 2rem;" onclick="appHub.logout()"><ion-icon name="log-out-outline"></ion-icon> Scrub Session Data</button>
+                    </div>
+
+                    <!-- NEW 3D FLIP MEMBERSHIP CARD -->
+                    <div class="membership-card-container flip-card" id="membership-3d">
+                        <div class="flip-inner">
+                            <div class="flip-front">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <h3 style="font-weight:900; font-style:italic;">NutriBite <span style="color:var(--primary)" id="mem-type-txt">FREE</span></h3>
+                                    <ion-icon name="wifi-outline" style="font-size:2rem; transform: rotate(90deg);"></ion-icon>
+                                </div>
+                                <div class="card-chip mt-4"></div>
+                                <p style="font-family: monospace; font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 1rem;">**** **** **** <span id="card-pin">0000</span></p>
+                                <div style="display:flex; justify-content:space-between;">
+                                    <div style="text-transform:uppercase; font-size:0.8rem; opacity:0.8;">Holder<br><strong style="font-size:1rem; opacity:1;" id="card-name">USER</strong></div>
+                                    <div style="text-transform:uppercase; font-size:0.8rem; opacity:0.8;">Status<br><strong style="font-size:1rem; opacity:1;">ACTIVE</strong></div>
+                                </div>
+                            </div>
+                            <div class="flip-back">
+                                <h3 style="font-weight:900; margin-bottom:1rem;">Tier Benefits</h3>
+                                <ul style="margin-left: 1.5rem; font-size:0.9rem; margin-bottom: 1rem;">
+                                    <li id="ben-1">Standard Processing</li>
+                                    <li id="ben-2">No Delivery Discounts</li>
+                                    <li id="ben-3">Basic Diet Plans</li>
+                                </ul>
+                                <button class="app-btn" style="font-size:0.8rem; padding:0.6rem; background: rgba(0,0,0,0.5);" onclick="appHub.upgradeMembership()">Force Upgrade to GOLD</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel" style="grid-column: span 3; padding: 2.5rem; position:relative; display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap:1rem;">
+                        <div>
+                            <h3 style="font-size:1.6rem; font-weight:800; margin-bottom: 0.5rem;"><ion-icon name="navigate-circle"></ion-icon> Active Order GPS Telemetry</h3>
+                            <p class="text-secondary">Your food is currently bound for your coordinates.</p>
+                        </div>
+                        <button class="app-btn btn-glowing" style="width: auto; padding: 1rem 2rem;" onclick="appHub.navigate('tracking')"><ion-icon name="map"></ion-icon> Open Tracking HUD</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS MAPPED OUT AS REQUESTED -->
+            <div id="prof-tab-orders" class="profile-tab-content glass-panel" style="display:none; padding:2.5rem;"><h3 class="mb-3">Order History</h3><div style="overflow-x:auto;"><table class="premium-table"><thead><tr><th>Ref ID</th><th>Date/Time</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="user-orders-list"></tbody></table></div></div>
+            <div id="prof-tab-payments" class="profile-tab-content glass-panel" style="display:none; padding:2.5rem;"><h3 class="mb-3">Payment Logs & Generated Invoices</h3><div style="overflow-x:auto;"><table class="premium-table"><thead><tr><th>Transaction Ref</th><th>Mode</th><th>Amount</th><th>Status</th><th>Invoice</th></tr></thead><tbody id="user-payments-list"></tbody></table></div></div>
+            
+            <div id="prof-tab-college" class="profile-tab-content glass-panel" style="display:none; padding:2.5rem;">
+                <h3 class="mb-3">Extensive College ID Sync</h3>
+                <form onsubmit="alert('College Sync Database Updated.'); return false;" class="bento-grid text-left" style="max-width:800px;">
+                    <div><input type="text" class="app-input" placeholder="College Name" value="MIT Campus"></div>
+                    <div><input type="text" class="app-input" placeholder="Student ID / Roll No" value="1092837"></div>
+                    <div><input type="text" class="app-input" placeholder="Department / Course" value="Computer Science"></div>
+                    <div><input type="text" class="app-input" placeholder="Year of Study" value="3rd Year"></div>
+                    <div><input type="text" class="app-input" placeholder="Section / Batch" value="Section A"></div>
+                    <div><select class="app-input"><option>Hostel Resident</option><option>Day Scholar</option></select></div>
+                    <div><input type="text" class="app-input" placeholder="Room No (If hostel resident)" value="Block C-412"></div>
+                    <div><input type="email" class="app-input" placeholder="College Email ID" value="stu_1092837@mit.edu"></div>
+                    <button type="submit" class="app-btn" style="grid-column: 1 / -1; background:var(--info);">Synchronize College Records</button>
+                </form>
+            </div>
+
+            <div id="prof-tab-health" class="profile-tab-content glass-panel" style="display:none; padding:2.5rem;">
+                <h3 class="mb-3">Dietary & Health Preferences</h3>
+                <form onsubmit="alert('Health Parameters Saved!'); return false;" style="max-width:600px;">
+                    <div class="mb-3"><label class="text-secondary mb-1" style="display:block;">Food Alignment Target</label><select class="app-input"><option>Vegetarian Framework</option><option>Non-Vegetarian</option><option>Strict Vegan</option></select></div>
+                    <div class="mb-3"><label class="text-secondary mb-1" style="display:block;">Registered Allergies</label><input type="text" class="app-input" placeholder="e.g. Peanuts, Dairy, Shellfish"></div>
+                    <div class="mb-4"><label class="text-secondary mb-1" style="display:block;">Pre-existing Medical Condition Flags</label><input type="text" class="app-input" placeholder="e.g. Diabetic condition, Hypertension"></div>
+                    <button type="submit" class="app-btn" style="background:var(--secondary);">Save Health Params</button>
+                </form>
+            </div>
+
+            <div id="prof-tab-security" class="profile-tab-content glass-panel" style="display:none; padding:2.5rem;">
+                <h3 class="mb-3"><ion-icon name="key"></ion-icon> Login Security Center</h3>
+                <div class="bento-grid">
+                    <div style="border:1px solid var(--border-color); padding:1.5rem; border-radius:16px;">
+                        <h4>Cryptographic Verification</h4>
+                        <p class="text-secondary mb-2 mt-1">Passwords are salted and encrypted via SHA-256 (mock). 2FA is currently active.</p>
+                        <button class="app-btn" style="background:var(--text-primary); padding:0.8rem; font-size:1rem;" onclick="prompt('Enter secure OTP sent to device:')">Simulate 2FA OTP Request</button>
+                    </div>
+                    <div style="border:1px solid var(--danger); padding:1.5rem; border-radius:16px; background:rgba(239,68,68,0.05);">
+                        <h4 style="color:var(--danger)">Security Logs</h4>
+                        <ul style="margin-top:1rem; list-style-type:none;">
+                            <li class="mb-1" style="color:var(--secondary)">SUCCESS - Current Session (India IP)</li>
+                            <li class="mb-1" style="color:var(--danger)">FAILED - Incorrect Password (10 mins ago)</li>
+                            <li class="mb-1" style="color:var(--text-secondary)">SUCCESS - Windows NT Login (Yeserday)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="prof-tab-notif" class="profile-tab-content glass-panel" style="display:none; padding:2.5rem;">
+                <h3 class="mb-3"><ion-icon name="notifications-outline"></ion-icon> Communication Relay Toggles</h3>
+                <div style="display:grid; gap:1.5rem; max-width:600px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:1rem; border-bottom:1px solid var(--border-color);">
+                        <div><strong>Order Status Pings</strong><br><small class="text-secondary">Receive real-time push events for logistics.</small></div>
+                        <input type="checkbox" checked style="width:25px; height:25px; cursor:pointer;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:1rem; border-bottom:1px solid var(--border-color);">
+                        <div><strong>Automated Meal Reminders</strong><br><small class="text-secondary">AI alerts indicating when to maintain diet regimen.</small></div>
+                        <input type="checkbox" checked style="width:25px; height:25px; cursor:pointer;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>Membership Alerts</strong><br><small class="text-secondary">Renewal pings and exclusive GOLD promo drops.</small></div>
+                        <input type="checkbox" checked style="width:25px; height:25px; cursor:pointer;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE: ADMIN LOGIN -->
+        <section id="module-admin-login" class="module-view">
+            <div class="auth-container glass-panel text-center">
+                <ion-icon name="shield-checkmark" style="font-size: 3rem; color:var(--primary); margin-bottom: 1rem;"></ion-icon>
+                <h2 class="mb-1" style="font-size:2rem; font-weight:800;">Enterprise Admin</h2>
+                <form onsubmit="appHub.adminLogin(); return false;">
+                    <input type="text" id="admin-id" class="app-input mb-3" placeholder="Partner ID (admin)" required>
+                    <div class="input-icon-wrapper mb-4">
+                        <input type="password" id="admin-pass" class="app-input" placeholder="Password (1234)" required>
+                        <ion-icon name="eye" id="admin-eye" onclick="appHub.togglePassword('admin-pass', 'admin-eye')"></ion-icon>
+                    </div>
+                    <button type="submit" class="app-btn mb-4" style="background:var(--danger)">Access Mainframe</button>
+                    <a href="javascript:void(0)" onclick="appHub.navigate('login')" style="color:var(--text-secondary);">Back to Extranet Form</a>
+                </form>
+            </div>
+        </section>
+
+        <!-- MODULE: ADMIN DASHBOARD EXTENDED -->
+        <section id="module-admin-dash" class="module-view">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 3rem;">
+                <div><h2 style="font-size: 2.5rem; font-weight:900;">Admin <span style="color:var(--danger);">Control</span></h2><p class="text-secondary">Network Operations Center.</p></div>
+                <button class="app-btn-secondary app-btn" style="width:auto; padding:0.8rem 1.5rem;" onclick="appHub.adminLogout()">Sign Out</button>
+            </div>
+            <div class="bento-grid" style="grid-template-columns: 280px 1fr; align-items:start;">
+                <div class="admin-sidebar glass-panel" style="padding:1.5rem;">
+                    <div class="admin-tab active" id="tab-btn-users" onclick="appHub.switchAdminTab('users')"><ion-icon name="people"></ion-icon> User Management</div>
+                    <div class="admin-tab" id="tab-btn-food" onclick="appHub.switchAdminTab('food')"><ion-icon name="restaurant"></ion-icon> Food Inventory</div>
+                    <div class="admin-tab" id="tab-btn-orders" onclick="appHub.switchAdminTab('orders')"><ion-icon name="receipt"></ion-icon> Order Control</div>
+                    <div class="admin-tab" id="tab-btn-finance" onclick="appHub.switchAdminTab('finance')"><ion-icon name="card"></ion-icon> Finance & Payments</div>
+                    <div class="admin-tab" id="tab-btn-analytics" onclick="appHub.switchAdminTab('analytics')"><ion-icon name="pie-chart"></ion-icon> Analytics Visuals</div>
+                    <div class="admin-tab" id="tab-btn-notif" onclick="appHub.switchAdminTab('notif')"><ion-icon name="notifications"></ion-icon> Broadcast Push</div>
+                    <div class="admin-tab" id="tab-btn-map" onclick="appHub.switchAdminTab('map')"><ion-icon name="map"></ion-icon> Logistics Map View</div>
+                </div>
+                <div class="glass-panel" style="padding: 2.5rem; min-height: 600px;">
+                    <!-- ADMIN PANELS -->
+                    <div id="admin-panel-users" class="admin-panel">
+                        <h3 class="mb-3">Registered Users Array</h3>
+                        <div style="overflow-x:auto;">
+                            <table class="premium-table">
+                                <thead><tr><th>Name/Role</th><th>Vitals Status</th><th>Contact / Protocol</th><th>Action Command</th></tr></thead>
+                                <tbody id="admin-users-list"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="admin-panel-food" class="admin-panel" style="display:none;">
+                        <h3 class="mb-3">Inventory Matrix</h3>
+                        <div style="overflow-x:auto;"><table class="premium-table"><tbody id="admin-food-list"></tbody></table></div>
+                    </div>
+                    <div id="admin-panel-orders" class="admin-panel" style="display:none;">
+                        <h3 class="mb-3">Order Telemetry Logs</h3>
+                        <div style="overflow-x:auto;"><table class="premium-table"><tbody id="admin-orders-list"></tbody></table></div>
+                    </div>
+                    <div id="admin-panel-finance" class="admin-panel" style="display:none;">
+                        <h3 class="mb-3">Vault Ledger Logs</h3>
+                        <div style="overflow-x:auto;"><table class="premium-table"><tbody id="admin-finance-list"></tbody></table></div>
+                    </div>
+                    <!-- Placeholders for others to prevent empty space -->
+                    <div id="admin-panel-analytics" class="admin-panel" style="display:none;"><h3 class="mb-3">Reports</h3><div style="padding:2rem; border:1px solid #ccc; text-align:center;">Analytics Chart Rendering Engine (Mock)</div></div>
+                    <div id="admin-panel-notif" class="admin-panel" style="display:none;"><h3 class="mb-3">Broadcaster</h3><div style="padding:2rem; border:1px solid #ccc; text-align:center;">Push Notification Form System Ready.</div></div>
+                    <div id="admin-panel-map" class="admin-panel" style="display:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;"><h3>Global Fleet Vectors</h3><span class="status-badge status-active">LIVE</span></div>
+                        <div id="admin-logistics-map"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AR MODAL OVERLAY -->
+        <div class="ar-overlay" id="ar-view">
+            <h2 style="color:white; margin-bottom: 1rem; font-weight:900; text-align:center;">Augmented Reality <span style="color:var(--secondary);">Projection</span></h2>
+            <p style="color:#ccc; margin-bottom: 2rem; max-width:80%; text-align:center;">Place the food item on your physical table using your camera.</p>
+            
+            <div class="ar-camera-box">
+                <video id="ar-video-feed" autoplay playsinline></video>
+                <div class="ar-scan-line"></div>
+                <!-- 3D food placeholder mock -->
+                <img id="ar-food-model" src="3d_burger.png" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:200px; filter:drop-shadow(0 20px 30px rgba(0,0,0,0.8)); z-index:10;">
+            </div>
+
+            <button class="ar-exit-btn" onclick="appHub.closeARView()"><ion-icon name="close"></ion-icon> Terminate AR Session</button>
+        </div>
+
+        <!-- QR CODE PAYMENT MODAL -->
+        <div class="qr-overlay" id="qr-checkout-view">
+            <h2 style="color:white; margin-bottom: 1.5rem; font-weight:900; text-align:center;">Awaiting Gateway <span style="color:var(--primary);">Scan</span></h2>
+            <div class="qr-box">
+                <div class="qr-scanner-line"></div>
+                <!-- Mock QR Image via open api -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=NutriBitePayment%20Gateway" alt="Gateway QR Code" style="width:250px; height:250px; position:relative; z-index:2;">
+            </div>
+            <p style="color:#ccc; margin-top: 1.5rem; max-width:80%; text-align:center;">Please scan this QR code via your <span id="qr-gateway-name" style="font-weight:800; color:white;">GPay / PhonePe</span> app.</p>
+            <p style="color:var(--secondary); font-weight:700; font-size:1.2rem; margin-top: 0.5rem;" id="qr-countdown">Time remaining: <span id="qr-timer-val">60</span>s</p>
+            <button class="app-btn mt-4" style="background:var(--secondary); padding: 0.8rem 2rem; width: auto;" onclick="appHub.confirmQRPayment()">Simulate Scan Success ✅</button>
+            <button class="app-btn-secondary app-btn mt-2" style="width:auto; border:none; padding:0.5rem;" onclick="appHub.closeQRModal()">Cancel Transaction</button>
+        </div>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
